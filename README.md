@@ -16,7 +16,7 @@ static final String API_KEY = "YOUR_API_KEY";
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/2.png)
 
 ## Reference
-[Google Cloud Text-to-speech](https://cloud.google.com/text-to-speech/docs/)
-[OkHttp](http://square.github.io/okhttp/)
+[Google Cloud Text-to-speech](https://cloud.google.com/text-to-speech/docs/)<br>
+[OkHttp](http://square.github.io/okhttp/)<br>
 [Gson](https://github.com/google/gson)
 
