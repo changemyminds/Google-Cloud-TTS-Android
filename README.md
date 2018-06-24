@@ -1,15 +1,14 @@
-# Googlge Cloud Platform Text To Speech library by API_KEY 
+# GCP TTS by API_KEY 
 
 ## How to use it?
 ### Step
-- Download file 
+1. Download file 
 ```
 git clone https://github.com/changemyminds/GCP_TTS_ByAPIKEY.git
 ```
-- Go to [here](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/app/src/main/java/darren/gcptts/tts/gcp/Config.java).
-  Change "YOUR_API_KEY" to your "API_KEY". If you don't know the API_KEY, please see [Google document](https://cloud.google.com/docs/authentication/api-keys).
-- Run app
-- Achievement
+2. Go to [here](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/app/src/main/java/darren/gcptts/tts/gcp/Config.java) and change "YOUR_API_KEY" to your "API_KEY".<br>If you don't know the API_KEY, please see [Google document](https://cloud.google.com/docs/authentication/api-keys).
+3. Run app
+4. Achievement
 
 ## Reference
 [Google Cloud Text-to-speech](https://cloud.google.com/text-to-speech/docs/)
