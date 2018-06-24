@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">GCPTTS</string>
+    <string name="ettPtText">A sight or prospect, typically of attractive natural scenery, that can be taken in by the eye from a particular place.</string>
+    <string name="tvwPtCountry">Language:</string>
+    <string name="tvwPtStyle">Style:</string>
+    <string name="tvwPtGender">Gender:</string>
+    <string name="tvwPtNaturalSampleRateHertz">NaturalSampleRateHertz:</string>
+    <string name="tvwPtPitch">Pitch Rate:</string>
+    <string name="tvwPtSpeakRate">Speak Rate:</string>
+    <string name="btnPtSpeechText">Speak</string>
+    <string name="btnPtSpeechResume">Resume</string>
+    <string name="btnPtSpeechPause">Pause</string>
+</resources>
