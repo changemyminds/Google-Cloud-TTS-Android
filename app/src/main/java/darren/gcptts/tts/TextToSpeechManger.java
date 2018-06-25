@@ -1,6 +1,10 @@
 package darren.gcptts.tts;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import darren.gcptts.tts.android.AndroidTTSAdapter;
+import darren.gcptts.tts.gcp.GCPTTS;
 import darren.gcptts.tts.gcp.GCPTTSAdapter;
 
 /**
@@ -8,7 +12,7 @@ import darren.gcptts.tts.gcp.GCPTTSAdapter;
  */
 
 public class TextToSpeechManger {
-    ISpeech mSpeech;
+    private ISpeech mSpeech;
 
     public TextToSpeechManger(GCPTTSAdapter gcpttsAdapter) {
         mSpeech = gcpttsAdapter;
