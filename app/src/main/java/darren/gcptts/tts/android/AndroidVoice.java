@@ -8,12 +8,12 @@ import java.util.Locale;
 
 public class AndroidVoice {
     private Locale mLocale;
-    private float mSpeakingRate;            // range: 0.25 ~ 4.00
-    private float mPitch;                   // range: -20.00 ~ 20.00
+    private float mSpeakingRate;            // range: 0.0 ~ 2.0
+    private float mPitch;                   // range: 1.0
 
     private AndroidVoice() {
         mLocale = Locale.ENGLISH;
-        mSpeakingRate = 1.3f;
+        mSpeakingRate = 1.0f;
         mPitch = 1.0f;
     }
 
