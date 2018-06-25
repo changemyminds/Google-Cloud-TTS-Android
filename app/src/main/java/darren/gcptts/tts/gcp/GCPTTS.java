@@ -51,7 +51,7 @@ public class GCPTTS {
         mAudioConfig = audioConfig;
     }
 
-    public void start(String text) {
+    void start(String text) {
         if (mGCPVoice != null && mAudioConfig != null) {
             mVoiceMessage = new VoiceMessage.Builder()
                     .add(new Input(text))
@@ -78,6 +78,7 @@ public class GCPTTS {
             okHttpClient.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
+                    speakFail(e.getMessage());
                     Log.e(TAG, "onFailure error : " + e.getMessage());
                 }
 
@@ -114,8 +115,10 @@ public class GCPTTS {
             mMediaPlayer.setDataSource(url);
             mMediaPlayer.prepare();
             mMediaPlayer.start();
+            speakSuccess();
         } catch (IOException IoEx) {
-            System.out.print(IoEx.getMessage());
+            speakFail(IoEx.getMessage());
+            Log.e(TAG, "error message : " + IoEx.getMessage());
         }
     }
 
