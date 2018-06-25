@@ -291,7 +291,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             AndroidTTSAdapter androidTTSAdapter = new AndroidTTSAdapter(mAndroidTTS);
             mTextToSpeechManger = new TextToSpeechManger(androidTTSAdapter);
             mTextToSpeechManger.speak(mEditText.getText().toString());
-            mButtonSpeakPause.setText(mPause);
         }
     }
 
@@ -333,6 +332,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mButtonSpeakPause.setText(mPause);
                 } else {
                     doAndroidTTS();
+                    mButtonSpeakPause.setText(mPause);
                 }
                 break;
             }
