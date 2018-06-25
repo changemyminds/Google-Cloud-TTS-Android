@@ -32,7 +32,7 @@ public class AndroidTTS implements TextToSpeech.OnInitListener {
         mAndroidVoice = androidVoice;
     }
 
-    public void speak(String text) {
+    void speak(String text) {
         if (mTextToSpeech != null && mIsEnable) {
             if (mAndroidVoice != null) {
                 mTextToSpeech.setLanguage(mAndroidVoice.getLocale());
@@ -48,13 +48,13 @@ public class AndroidTTS implements TextToSpeech.OnInitListener {
         }
     }
 
-    public void stop() {
+    void stop() {
         if (mTextToSpeech != null) {
             mTextToSpeech.stop();
         }
     }
 
-    public void exit() {
+    void exit() {
         if (mTextToSpeech != null) {
             mTextToSpeech.stop();
             mTextToSpeech.shutdown();
