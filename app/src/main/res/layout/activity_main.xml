@@ -6,12 +6,23 @@
     android:layout_height="match_parent"
     tools:context="darren.gcptts.MainActivity">
 
+    <Button
+        android:id="@+id/btnIdRefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/btnPtRefresh"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ettIdText" />
+
     <EditText
         android:id="@+id/ettIdText"
         android:layout_width="wrap_content"
         android:layout_height="92dp"
         android:inputType="textMultiLine"
         android:text="@string/ettPtText"
+        android:textColorLink="@android:color/background_dark"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -130,6 +141,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:thumbTint="@color/colorDeepBlue"
         app:layout_constraintBottom_toBottomOf="@id/tvwIdPitch"
         app:layout_constraintStart_toEndOf="@id/tvwIdPitch"
         app:layout_constraintTop_toTopOf="@id/tvwIdPitch" />
@@ -152,6 +164,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:thumbTint="@color/colorDeepBlue"
         app:layout_constraintBottom_toBottomOf="@id/tvwIdSpeakRate"
         app:layout_constraintStart_toEndOf="@id/tvwIdSpeakRate"
         app:layout_constraintTop_toTopOf="@id/tvwIdSpeakRate" />
@@ -165,7 +178,19 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="@string/btnPtSpeechText"
-        app:layout_constraintBottom_toTopOf="@id/btnIdPauseAndResume"
+        app:layout_constraintBottom_toTopOf="@+id/btnIdStop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnIdStop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/btnPtSpeechStop"
+        app:layout_constraintBottom_toTopOf="@+id/btnIdPauseAndResume"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
