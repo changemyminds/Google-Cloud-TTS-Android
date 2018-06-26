@@ -10,4 +10,6 @@
     <string name="btnPtSpeechText">Speak</string>
     <string name="btnPtSpeechResume">Resume</string>
     <string name="btnPtSpeechPause">Pause</string>
+    <string name="btnPtSpeechStop">Stop</string>
+    <string name="btnPtRefresh">Refresh</string>
 </resources>
