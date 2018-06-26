@@ -5,7 +5,8 @@ import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by USER on 2018/6/25.
@@ -15,12 +16,13 @@ public class AndroidTTS implements TextToSpeech.OnInitListener {
     private static final String TAG = AndroidTTS.class.getName();
 
     private TextToSpeech mTextToSpeech;
-    private boolean mIsEnable;
     private AndroidVoice mAndroidVoice;
+    private List<ISpeakListener> mSpeakListeners = new ArrayList<>();
+    private boolean mIsEnable;
 
     public AndroidTTS(Context context) {
+        mIsEnable = false;
         mTextToSpeech = new TextToSpeech(context, this);
-        mAndroidVoice = null;
     }
 
     public AndroidTTS(Context context, AndroidVoice androidVoice) {
@@ -35,15 +37,25 @@ public class AndroidTTS implements TextToSpeech.OnInitListener {
     void speak(String text) {
         if (mTextToSpeech != null && mIsEnable) {
             if (mAndroidVoice != null) {
-                mTextToSpeech.setLanguage(mAndroidVoice.getLocale());
-                mTextToSpeech.setPitch(mAndroidVoice.getPitch());
-                mTextToSpeech.setSpeechRate(mAndroidVoice.getSpeakingRate());
+                if (!isSetAndroidVoiceEnable(mAndroidVoice)) {
+                    String message = "can't set the value to tts android library";
+                    Log.e(TAG, message);
+                    speakFailure(message);
+                    return;
+                }
             }
 
+            boolean isSpeakFail;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+                isSpeakFail = (mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null) == TextToSpeech.ERROR);
             } else {
-                mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                isSpeakFail = (mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null) == TextToSpeech.ERROR);
+            }
+
+            if(isSpeakFail) {
+                speakFailure("TextToSpeech.ERROR");
+            } else {
+                speakSuccess("speak : " + text);
             }
         }
     }
@@ -62,18 +74,62 @@ public class AndroidTTS implements TextToSpeech.OnInitListener {
         }
     }
 
+    public void addSpeakListener(ISpeakListener speakListener) {
+        mSpeakListeners.add(speakListener);
+    }
+
+    public void removeSpeakListener(ISpeakListener speakListener) {
+        mSpeakListeners.remove(speakListener);
+    }
+
+    public void removeSpeakListener() {
+        mSpeakListeners.clear();
+    }
+
+    void speakSuccess(String message) {
+        for (ISpeakListener speakListener : mSpeakListeners) {
+            speakListener.onSuccess(message);
+        }
+    }
+
+    void speakFailure(String errorMessage) {
+        for (ISpeakListener speakListener : mSpeakListeners) {
+            speakListener.onFailure(errorMessage);
+        }
+    }
+
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            mTextToSpeech.setSpeechRate(1.0f);
-            int resultLang = mTextToSpeech.setLanguage(Locale.ENGLISH);
-            mIsEnable = !(resultLang == TextToSpeech.LANG_MISSING_DATA ||
-                    resultLang == TextToSpeech.LANG_NOT_SUPPORTED);
+            if (mAndroidVoice == null) {
+                mAndroidVoice = new AndroidVoice.Builder().build();
+            }
+
+            mIsEnable = isSetAndroidVoiceEnable(mAndroidVoice);
+            if (!mIsEnable) {
+                Log.e(TAG, "can't get the android tts library.");
+            }
         } else {
             Log.e(TAG, "can't get the android tts library.");
             mIsEnable = false;
         }
     }
 
+    private boolean isSetAndroidVoiceEnable(AndroidVoice androidVoice) {
+        if (mTextToSpeech.setSpeechRate(androidVoice.getSpeakingRate()) == TextToSpeech.ERROR ||
+                mTextToSpeech.setPitch(androidVoice.getPitch()) == TextToSpeech.ERROR ||
+                mTextToSpeech.setLanguage(androidVoice.getLocale()) == TextToSpeech.LANG_MISSING_DATA ||
+                mTextToSpeech.setLanguage(androidVoice.getLocale()) == TextToSpeech.LANG_NOT_SUPPORTED) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public interface ISpeakListener {
+        void onSuccess(String message);
+        void onFailure(String errorMessage);
+    }
 
 }

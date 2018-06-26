@@ -39,7 +39,6 @@ public class TextToSpeechManger {
     }
 
     public void exit() {
-        stop();
         mSpeech.exit();
     }
 }
