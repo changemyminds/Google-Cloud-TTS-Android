@@ -1,5 +1,11 @@
 package darren.gcptts.tts.gcp;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by USER on 2018/6/24.
  */
@@ -9,7 +15,10 @@ public class VoiceMessage {
     private GCPVoice mGCPVoice;
     private AudioConfig mAudioConfig;
 
+    private List<VoiceParameter> mVoiceParameters;
+
     private VoiceMessage() {
+        mVoiceParameters = new ArrayList<>();
     }
 
     public static class Builder {
@@ -19,18 +28,26 @@ public class VoiceMessage {
             mVoiceMessage = new VoiceMessage();
         }
 
+        public Builder addParameter(VoiceParameter voiceParameter){
+            mVoiceMessage.mVoiceParameters.add(voiceParameter);
+            return this;
+        }
+
+        @Deprecated
         public Builder add(Input input) {
-            mVoiceMessage.mInput = input;
+            mVoiceMessage.mVoiceParameters.add(input);
             return this;
         }
 
+        @Deprecated
         public Builder add(GCPVoice GCPVoice) {
-            mVoiceMessage.mGCPVoice = GCPVoice;
+            mVoiceMessage.mVoiceParameters.add(GCPVoice);
             return this;
         }
 
+        @Deprecated
         public Builder add(AudioConfig audioConfig) {
-            mVoiceMessage.mAudioConfig = audioConfig;
+            mVoiceMessage.mVoiceParameters.add(audioConfig);
             return this;
         }
 
@@ -41,9 +58,18 @@ public class VoiceMessage {
 
     @Override
     public String toString() {
-        return "{" + mInput.toString() + "," +
-                mGCPVoice.toString() + "," +
-                mAudioConfig.toString() +
-                "}";
+        if (mVoiceParameters.size() != 0) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                for (VoiceParameter v : mVoiceParameters) {
+                    jsonObject.put(v.getJSONHeader(), v.toJSONObject());
+                }
+                return jsonObject.toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return "";
     }
 }

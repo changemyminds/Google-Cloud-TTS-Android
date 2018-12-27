@@ -1,10 +1,13 @@
 package darren.gcptts.tts.gcp;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by USER on 2018/6/23.
  */
 
-public class Input {
+public class Input implements VoiceParameter {
     private String mText;
     private boolean mIsEnableSSML;
 
@@ -18,6 +21,25 @@ public class Input {
         mIsEnableSSML = isSSML;
     }
 
+    @Override
+    public String getJSONHeader() {
+        return "input";
+    }
+
+    public JSONObject toJSONObject(){
+        JSONObject jsonText= new JSONObject();
+        try {
+            jsonText.put((mIsEnableSSML) ? "ssml" : "text", mText);
+            return jsonText;
+        } catch (JSONException e) {
+//            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Deprecated
     @Override
     public String toString() {
         String text = "'" + this.getClass().getSimpleName().toLowerCase() + "':{";

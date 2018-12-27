@@ -54,9 +54,9 @@ public class GCPTTS {
         if (mGCPVoice != null && mAudioConfig != null) {
             mMessage = text;
             mVoiceMessage = new VoiceMessage.Builder()
-                    .add(new Input(text))
-                    .add(mGCPVoice)
-                    .add(mAudioConfig)
+                    .addParameter(new Input(text))
+                    .addParameter(mGCPVoice)
+                    .addParameter(mAudioConfig)
                     .build();
             new Thread(runnableSend).start();
         }
@@ -65,6 +65,8 @@ public class GCPTTS {
     private Runnable runnableSend = new Runnable() {
         @Override
         public void run() {
+            Log.d(TAG, "Message: " + mVoiceMessage.toString());
+
             OkHttpClient okHttpClient = new OkHttpClient();
             RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
                     mVoiceMessage.toString());

@@ -1,11 +1,19 @@
 package darren.gcptts.tts.gcp;
 
+import android.speech.tts.Voice;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by USER on 2018/6/22.
  */
 
 
-public class AudioConfig {
+public class AudioConfig implements VoiceParameter {
     private EAudioEncoding mEAudioEncoding;
     private float mSpeakingRate;            // range: 0.25 ~ 4.00
     private float mPitch;                   // range: -20.00 ~ 20.00
@@ -58,6 +66,27 @@ public class AudioConfig {
     }
 
     @Override
+    public String getJSONHeader() {
+        return "audioConfig";
+    }
+
+     @Override
+    public JSONObject toJSONObject(){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("audioEncoding", mEAudioEncoding.toString());
+            jsonObject.put("speakingRate", String.valueOf(mSpeakingRate));
+            jsonObject.put("pitch", getPitch());
+            return jsonObject;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Deprecated
+    @Override
     public String toString() {
         String text = "'audioConfig':{";
         text += "'audioEncoding':'" + mEAudioEncoding.toString() + "',";
@@ -67,5 +96,17 @@ public class AudioConfig {
         text += (mSampleRateHertz == 0) ? "" : ",'" + String.valueOf(mSampleRateHertz) + "'";
         text += "}";
         return text;
+    }
+
+    private String getPitch(){
+        List<String> pitchList = new ArrayList<>();
+        pitchList.add(String.valueOf(mPitch));
+        if ((mVolumeGainDb != 0)) {
+            pitchList.add(String.valueOf(mVolumeGainDb));
+        }
+        if (mSampleRateHertz != 0) {
+            pitchList.add(String.valueOf(mSampleRateHertz));
+        }
+        return pitchList.toString().replace("[", "").replace("]", "");
     }
 }
