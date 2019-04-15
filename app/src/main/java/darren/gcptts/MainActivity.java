@@ -18,35 +18,35 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import java.util.Locale;
-
-import darren.gcptts.tts.TextToSpeechManger;
-import darren.gcptts.tts.android.AndroidTTS;
-import darren.gcptts.tts.android.AndroidTTSAdapter;
+import darren.gcptts.tts.SpeechManagerTTS;
+import darren.gcptts.tts.AndroidTTSAdapter;
 import darren.gcptts.tts.android.AndroidVoice;
 import darren.gcptts.tts.gcp.AudioConfig;
 import darren.gcptts.tts.gcp.EAudioEncoding;
-import darren.gcptts.tts.gcp.GCPTTS;
 import darren.gcptts.tts.gcp.ESSMLlVoiceGender;
-import darren.gcptts.tts.gcp.GCPTTSAdapter;
+import darren.gcptts.tts.GCPTTSAdapter;
 import darren.gcptts.tts.gcp.GCPVoice;
 import darren.gcptts.tts.gcp.VoiceCollection;
 import darren.gcptts.tts.gcp.VoiceList;
 
-
+/**
+ * Author: Darren.
+ * Date: 2018/6/25.
+ * Description:
+ * Reference:
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getName();
     private static final int TEXT_TO_SPEECH_CODE = 0x100;
 
-    private TextToSpeechManger mTextToSpeechManger;
-    private AndroidTTS mAndroidTTS;
-    private GCPTTS mGCPTTS;
+    private AndroidTTSAdapter mAndroidTTSAdapter;
+    private GCPTTSAdapter mGCPTTSAdapter;
+    private SpeechManagerTTS mSpeechManagerGCPTTS;
 
     private EditText mEditText;
     private Spinner mSpinnerLanguage;
@@ -100,47 +100,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
 
-        initGCPTTS();
-        initAndroidTTS();
+        mSpeechManagerGCPTTS = new SpeechManagerTTS();
+
+        initGCPTTSSettings();
+        initAndroidTTSSetting();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (mTextToSpeechManger != null) {
-            if (mButtonSpeakPause.getText().toString().compareTo(mPause) == 0) {
-                mTextToSpeechManger.resume();
-            }
+        if (mButtonSpeakPause.getText().toString().compareTo(mPause) == 0) {
+            mSpeechManagerGCPTTS.resume();
         }
     }
 
     @Override
     protected void onPause() {
-        if (mTextToSpeechManger != null) {
-            mTextToSpeechManger.pause();
-        }
-
+        mSpeechManagerGCPTTS.pause();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        if (mTextToSpeechManger != null) {
-            mTextToSpeechManger.exit();
-            mTextToSpeechManger = null;
-        }
-
-        if (mGCPTTS != null) {
-            mGCPTTS.removeSpeakListener();
-            mGCPTTS = null;
-        }
-
-        if (mAndroidTTS != null) {
-            mAndroidTTS.removeSpeakListener();
-            mAndroidTTS = null;
-        }
-
+        mSpeechManagerGCPTTS.dispose();
+        mSpeechManagerGCPTTS = null;
         super.onDestroy();
     }
 
@@ -207,18 +190,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
             case TEXT_TO_SPEECH_CODE:
                 if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                    mAndroidTTS = new AndroidTTS(this);
-                    mAndroidTTS.addSpeakListener(new AndroidTTS.ISpeakListener() {
-                        @Override
-                        public void onSuccess(String message) {
-                            Log.i(TAG, message);
-                        }
-
-                        @Override
-                        public void onFailure(String errorMessage) {
-                            Log.e(TAG, "speak fail : " + errorMessage);
-                        }
-                    });
+                    SpeechManagerTTS androidTTSManager = new SpeechManagerTTS();
+                    mAndroidTTSAdapter = new AndroidTTSAdapter(this);
+                    androidTTSManager.setSpeech(mAndroidTTSAdapter);
+                    mSpeechManagerGCPTTS.setSupervisor(androidTTSManager);
                 } else {
                     Toast.makeText(this,
                             "You do not have the text to speech file you have to install",
@@ -231,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void initGCPTTS() {
+    private void initGCPTTSSettings() {
         mSeekBarPitch.setProgress(2000);
         mSeekBarSpeakRate.setProgress(75);
 
@@ -268,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 final ArrayAdapter<String> adapterLanguage;
-                adapterLanguage = new ArrayAdapter<String>(selfContext,
+                adapterLanguage = new ArrayAdapter<>(selfContext,
                         android.R.layout.simple_spinner_item,
                         voiceCollection.getLanguage());
                 adapterLanguage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -314,83 +289,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
 
-                mGCPTTS = new GCPTTS();
-                mGCPTTS.addSpeakListener(new GCPTTS.ISpeakListener() {
-                    @Override
-                    public void onSuccess(String message) {
-                        Log.i(TAG, message);
-                    }
-
-                    @Override
-                    public void onFailure(String errorMessage, String speakMessage) {
-                        Message message = mHandler.obtainMessage(EUiHandlerStatus.SHOW_TOAST.ordinal(), errorMessage);
-                        message.sendToTarget();
-
-                        Log.e(TAG, "speak fail : " + errorMessage);
-                        mTextToSpeechManger = loadAndroidTTS();
-                        if (mTextToSpeechManger != null) {
-                            mTextToSpeechManger.speak(speakMessage);
-                        }
-                    }
-                });
+                // init GCPTTSAdapter
+                mGCPTTSAdapter = new GCPTTSAdapter();
+                mSpeechManagerGCPTTS.setSpeech(mGCPTTSAdapter);
             }
 
             @Override
             public void onFailure(String error) {
                 Message message = mHandler.obtainMessage(EUiHandlerStatus.UPDATE_SPINNER.ordinal(), null);
                 message.sendToTarget();
-
-                mGCPTTS = null;
                 Log.e(TAG, "Loading Voice List Error, error code : " + error);
             }
         });
         voiceList.start();
     }
 
-    private TextToSpeechManger loadGCPTTS() {
-        if (mGCPTTS == null) {
-            return null;
+    private void initGCPTTSVoice() {
+        if (mGCPTTSAdapter != null) {
+            String languageCode = mSpinnerLanguage.getSelectedItem().toString();
+            String name = mSpinnerStyle.getSelectedItem().toString();
+            float pitch = ((float) (mPitch - 2000) / 100);
+            float speakRate = ((float) (mSpeakRate + 25) / 100);
+
+            GCPVoice gcpVoice = new GCPVoice(languageCode, name);
+            AudioConfig audioConfig = new AudioConfig.Builder()
+                    .addAudioEncoding(EAudioEncoding.MP3)
+                    .addSpeakingRate(speakRate)
+                    .addPitch(pitch)
+                    .build();
+
+            mGCPTTSAdapter.setGCPVoice(gcpVoice);
+            mGCPTTSAdapter.setAudioConfig(audioConfig);
         }
-
-        String languageCode = mSpinnerLanguage.getSelectedItem().toString();
-        String name = mSpinnerStyle.getSelectedItem().toString();
-        float pitch = ((float) (mPitch - 2000) / 100);
-        float speakRate = ((float) (mSpeakRate + 25) / 100);
-
-        GCPVoice gcpVoice = new GCPVoice(languageCode, name);
-        AudioConfig audioConfig = new AudioConfig.Builder()
-                .addAudioEncoding(EAudioEncoding.MP3)
-                .addSpeakingRate(speakRate)
-                .addPitch(pitch)
-                .build();
-
-        mGCPTTS.setGCPVoice(gcpVoice);
-        mGCPTTS.setAudioConfig(audioConfig);
-        GCPTTSAdapter gcpttsAdapter = new GCPTTSAdapter(mGCPTTS);
-
-        return new TextToSpeechManger(gcpttsAdapter);
     }
 
-    private void initAndroidTTS() {
+    private void initAndroidTTSSetting() {
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkIntent, TEXT_TO_SPEECH_CODE);
     }
 
-    private TextToSpeechManger loadAndroidTTS() {
-        if (mAndroidTTS == null) {
-            return null;
+    private void initAndroidTTSVoice() {
+        if (mAndroidTTSAdapter != null) {
+            AndroidVoice androidVoice = new AndroidVoice.Builder()
+                    .addLanguage(Locale.ENGLISH)
+                    .addPitch(1.0f)
+                    .addSpeakingRate(1.0f)
+                    .build();
+
+            mAndroidTTSAdapter.setAndroidVoice(androidVoice);
         }
-
-        AndroidVoice androidVoice = new AndroidVoice.Builder()
-                .addLanguage(Locale.ENGLISH)
-                .addPitch(1.0f)
-                .addSpeakingRate(1.0f)
-                .build();
-
-        mAndroidTTS.setAndroidVoice(androidVoice);
-        AndroidTTSAdapter androidTTSAdapter = new AndroidTTSAdapter(mAndroidTTS);
-        return new TextToSpeechManger(androidTTSAdapter);
     }
 
     @Override
@@ -398,55 +346,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         switch (id) {
             case R.id.btnIdSpeak: {
-                if (mTextToSpeechManger != null) {
-                    mTextToSpeechManger.stop();
-                }
-
+                mSpeechManagerGCPTTS.stopSpeak();
                 if (mSpinnerLanguage.getSelectedItem() == null ||
                         mSpinnerStyle.getSelectedItem() == null) {
                     Toast.makeText(this,
                             "Loading Voice Error, please check network or API_KEY.",
                             Toast.LENGTH_LONG).show();
-
-                    mTextToSpeechManger = loadAndroidTTS();
-                    if (mTextToSpeechManger != null) {
-                        mTextToSpeechManger.speak(mEditText.getText().toString());
-                    }
-
-                    return;
+                } else {
+                    initGCPTTSVoice();
                 }
 
-                mTextToSpeechManger = loadGCPTTS();
-                if (mTextToSpeechManger != null) {
-                    mTextToSpeechManger.speak(mEditText.getText().toString());
-                }
+                initAndroidTTSVoice();
 
+                mSpeechManagerGCPTTS.startSpeak(mEditText.getText().toString());
                 mButtonSpeakPause.setText(mPause);
                 break;
             }
 
             case R.id.btnIdPauseAndResume: {
-                if (mTextToSpeechManger != null) {
-                    Button button = findViewById(R.id.btnIdPauseAndResume);
-                    if (button.getText().toString().compareTo(mPause) == 0) {
-                        mTextToSpeechManger.pause();
-                        button.setText(mResume);
-                    } else {
-                        mTextToSpeechManger.resume();
-                        button.setText(mPause);
-                    }
+                Button button = findViewById(R.id.btnIdPauseAndResume);
+                if (button.getText().toString().compareTo(mPause) == 0) {
+                    mSpeechManagerGCPTTS.pause();
+                    button.setText(mResume);
+                } else {
+                    mSpeechManagerGCPTTS.resume();
+                    button.setText(mPause);
                 }
                 break;
             }
 
             case R.id.btnIdRefresh: {
-                initGCPTTS();
+                initGCPTTSSettings();
             }
 
             case R.id.btnIdStop: {
-                if (mTextToSpeechManger != null) {
-                    mTextToSpeechManger.stop();
-                }
+                mSpeechManagerGCPTTS.stopSpeak();
             }
         }
     }
@@ -457,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NONE;
 
         static EUiHandlerStatus getStatus(int id) {
-            if(id == SHOW_TOAST.ordinal()) {
+            if (id == SHOW_TOAST.ordinal()) {
                 return SHOW_TOAST;
             } else if (id == UPDATE_SPINNER.ordinal()) {
                 return UPDATE_SPINNER;

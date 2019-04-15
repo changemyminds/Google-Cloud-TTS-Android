@@ -4,14 +4,15 @@ import android.content.Context;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by USER on 2018/6/25.
+ * Author: Darren.
+ * Date: 2018/6/25.
+ * Description:
+ * Reference:
  */
-
 public class AndroidTTS implements TextToSpeech.OnInitListener {
     private static final String TAG = AndroidTTS.class.getName();
 
@@ -34,7 +35,7 @@ public class AndroidTTS implements TextToSpeech.OnInitListener {
         mAndroidVoice = androidVoice;
     }
 
-    void speak(String text) {
+    public void speak(String text) {
         if (mTextToSpeech != null && mIsEnable) {
             if (mAndroidVoice != null) {
                 if (!isSetAndroidVoiceEnable(mAndroidVoice)) {
@@ -52,21 +53,21 @@ public class AndroidTTS implements TextToSpeech.OnInitListener {
                 isSpeakFail = (mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null) == TextToSpeech.ERROR);
             }
 
-            if(isSpeakFail) {
+            if (isSpeakFail) {
                 speakFailure("TextToSpeech.ERROR");
             } else {
-                speakSuccess("speak : " + text);
+                speakSuccess(text);
             }
         }
     }
 
-    void stop() {
+    public void stop() {
         if (mTextToSpeech != null) {
             mTextToSpeech.stop();
         }
     }
 
-    void exit() {
+    public void exit() {
         if (mTextToSpeech != null) {
             mTextToSpeech.stop();
             mTextToSpeech.shutdown();
@@ -86,13 +87,13 @@ public class AndroidTTS implements TextToSpeech.OnInitListener {
         mSpeakListeners.clear();
     }
 
-    void speakSuccess(String message) {
+    private void speakSuccess(String message) {
         for (ISpeakListener speakListener : mSpeakListeners) {
             speakListener.onSuccess(message);
         }
     }
 
-    void speakFailure(String errorMessage) {
+    private void speakFailure(String errorMessage) {
         for (ISpeakListener speakListener : mSpeakListeners) {
             speakListener.onFailure(errorMessage);
         }
@@ -129,6 +130,7 @@ public class AndroidTTS implements TextToSpeech.OnInitListener {
 
     public interface ISpeakListener {
         void onSuccess(String message);
+
         void onFailure(String errorMessage);
     }
 

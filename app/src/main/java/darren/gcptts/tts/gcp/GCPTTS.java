@@ -50,7 +50,7 @@ public class GCPTTS {
         mAudioConfig = audioConfig;
     }
 
-    void start(String text) {
+    public void start(String text) {
         if (mGCPVoice != null && mAudioConfig != null) {
             mMessage = text;
             mVoiceMessage = new VoiceMessage.Builder()
@@ -80,7 +80,7 @@ public class GCPTTS {
             okHttpClient.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
-                    speakFail(e.getMessage(), mMessage);
+                    speakFail(mMessage, e);
                     Log.e(TAG, "onFailure error : " + e.getMessage());
                 }
 
@@ -102,7 +102,7 @@ public class GCPTTS {
                         }
                     }
 
-                    speakFail("get response fail", mMessage);
+                    speakFail(mMessage, new NullPointerException("get response fail"));
                 }
             });
         }
@@ -119,12 +119,11 @@ public class GCPTTS {
             mMediaPlayer.start();
             speakSuccess(mMessage);
         } catch (IOException IoEx) {
-            speakFail(IoEx.getMessage(), mMessage);
-            Log.e(TAG, "error message : " + IoEx.getMessage());
+            speakFail(mMessage, IoEx);
         }
     }
 
-    void stopAudio() {
+    public void stopAudio() {
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.stop();
             mMediaPlayer.reset();
@@ -132,21 +131,21 @@ public class GCPTTS {
         }
     }
 
-    void resumeAudio() {
+    public void resumeAudio() {
         if (mMediaPlayer != null && !mMediaPlayer.isPlaying() && mVoiceLength != -1) {
             mMediaPlayer.seekTo(mVoiceLength);
             mMediaPlayer.start();
         }
     }
 
-    void pauseAudio() {
+    public void pauseAudio() {
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
             mVoiceLength = mMediaPlayer.getCurrentPosition();
         }
     }
 
-    void exit() {
+    public void exit() {
         stopAudio();
         mMediaPlayer = null;
     }
@@ -157,9 +156,9 @@ public class GCPTTS {
         }
     }
 
-    private void speakFail(String errorMessage, String speakMessage) {
+    private void speakFail(String speakMessage, Exception e) {
         for (ISpeakListener speakListener : mSpeakListeners) {
-            speakListener.onFailure(errorMessage, speakMessage);
+            speakListener.onFailure(speakMessage, e);
         }
     }
 
@@ -177,6 +176,7 @@ public class GCPTTS {
 
     public interface ISpeakListener {
         void onSuccess(String message);
-        void onFailure(String errorMessage, String speakMessage);
+
+        void onFailure(String message, Exception e);
     }
 }
