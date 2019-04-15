@@ -6,7 +6,7 @@ import java.util.List;
 import darren.gcptts.tts.android.AndroidTTS;
 
 /**
- * Author: Darren.
+ * Author: Changemyminds.
  * Date: 2018/6/24.
  * Description:
  * Reference:

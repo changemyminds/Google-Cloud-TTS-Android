@@ -3,9 +3,11 @@ package darren.gcptts.tts.android;
 import java.util.Locale;
 
 /**
- * Created by USER on 2018/6/24.
+ * Author: Changemyminds.
+ * Date: 2018/6/24.
+ * Description:
+ * Reference:
  */
-
 public class AndroidVoice {
     private Locale mLocale;
     private float mSpeakingRate;            // range: 0.0 ~ 2.0

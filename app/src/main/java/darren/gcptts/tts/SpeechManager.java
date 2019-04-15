@@ -4,7 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * Author: Darren.
+ * Author: Changemyminds.
  * Date: 2018/6/24.
  * Description:
  * Reference:

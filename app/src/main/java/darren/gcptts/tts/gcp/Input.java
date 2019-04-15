@@ -4,9 +4,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by USER on 2018/6/23.
+ * Author: Changemyminds.
+ * Date: 2018/6/23.
+ * Description:
+ * Reference:
  */
-
 public class Input implements VoiceParameter {
     private String mText;
     private boolean mIsEnableSSML;

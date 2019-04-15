@@ -35,7 +35,7 @@ import darren.gcptts.tts.gcp.VoiceCollection;
 import darren.gcptts.tts.gcp.VoiceList;
 
 /**
- * Author: Darren.
+ * Author: Changemyminds.
  * Date: 2018/6/25.
  * Description:
  * Reference:

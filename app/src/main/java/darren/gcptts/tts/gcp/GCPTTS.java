@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by USER on 2018/6/24.
+ * Author: Changemyminds.
+ * Date: 2018/6/24.
+ * Description:
+ * Reference:
  */
-
 public class GCPTTS {
     private static final String TAG = GCPTTS.class.getName();
 

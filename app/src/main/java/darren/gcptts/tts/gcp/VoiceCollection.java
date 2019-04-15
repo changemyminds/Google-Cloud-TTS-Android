@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by USER on 2018/6/24.
+ * Author: Changemyminds.
+ * Date: 2018/6/24.
+ * Description:
+ * Reference:
  */
-
 public class VoiceCollection {
     HashMap<String, List<GCPVoice>> hashMap;
 

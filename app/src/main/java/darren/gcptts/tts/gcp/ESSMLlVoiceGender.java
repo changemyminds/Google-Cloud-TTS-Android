@@ -1,9 +1,11 @@
 package darren.gcptts.tts.gcp;
 
 /**
- * Created by USER on 2018/6/24.
+ * Author: Changemyminds.
+ * Date: 2018/6/24.
+ * Description:
+ * Reference:
  */
-
 public enum ESSMLlVoiceGender {
     SSML_VOICE_GENDER_UNSPECIFIED,
     MALE,

@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by USER on 2018/6/22.
+ * Author: Changemyminds.
+ * Date: 2018/6/22.
+ * Description:
+ * Reference:
  */
-
 public class VoiceList {
     private static final String TAG = VoiceList.class.getName();
 

@@ -1,7 +1,7 @@
 package darren.gcptts.tts;
 
 /**
- * Author: Darren.
+ * Author: Changemyminds.
  * Date: 2019/4/14.
  * Description:
  * Reference:

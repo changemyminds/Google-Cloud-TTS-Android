@@ -1,9 +1,11 @@
 package darren.gcptts.tts.gcp;
 
 /**
- * Created by USER on 2018/6/24.
+ * Author: Changemyminds.
+ * Date: 2018/6/24.
+ * Description:
+ * Reference:
  */
-
 public enum EAudioEncoding {
     AUDIO_ENCODING_UNSPECIFIED("AUDIO_ENCODING_UNSPECIFIED"),
     LINEAR16("LINEAR16"),

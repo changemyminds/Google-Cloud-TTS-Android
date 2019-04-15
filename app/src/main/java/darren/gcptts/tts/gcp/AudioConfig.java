@@ -1,18 +1,16 @@
 package darren.gcptts.tts.gcp;
 
-import android.speech.tts.Voice;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by USER on 2018/6/22.
+ * Author: Changemyminds.
+ * Date: 2018/6/22.
+ * Description:
+ * Reference:
  */
-
-
 public class AudioConfig implements VoiceParameter {
     private EAudioEncoding mEAudioEncoding;
     private float mSpeakingRate;            // range: 0.25 ~ 4.00
