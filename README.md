@@ -1,4 +1,4 @@
-# GCP TTS use API-KEY on Android
+# Google Cloud Platform TTS use API-KEY on Android.
 
 ## How to use it?
 ### Step
@@ -19,6 +19,7 @@ static final String API_KEY = "YOUR_API_KEY";
 If you want to test voice or find support language, you can go [here](https://cloud.google.com/text-to-speech/) to test online.
 
 ## Reference
+[Google Cloud Java Issue](https://github.com/googleapis/google-cloud-java/issues/3400)<br>
 [Google Cloud Text-to-speech](https://cloud.google.com/text-to-speech/docs/)<br>
 [OkHttp](http://square.github.io/okhttp/)<br>
 [Gson](https://github.com/google/gson)
