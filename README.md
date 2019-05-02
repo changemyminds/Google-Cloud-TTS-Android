@@ -1,17 +1,17 @@
 # Google Cloud Platform TTS use API-KEY on Android.
-
 ## How to use it?
-### Step
-1. Download file 
+
+### Step 1: Download file 
 ```
 git clone https://github.com/changemyminds/GCP_TTS_APIKEY_Android.git
 ```
-2. Go to [here](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/app/src/main/java/darren/gcptts/tts/gcp/Config.java) and change "YOUR_API_KEY" to your "API_KEY".<br>If you don't know the API_KEY, please see [Google document](https://cloud.google.com/docs/authentication/api-keys).
+### Step 2: Set up API Key
+Go to [here](https://github.com/changemyminds/Google-Cloud-TTS-Android/blob/master/app/src/main/java/darren/gcptts/tts/gcp/Config.java) and change "YOUR_API_KEY" to your Google Cloud API Key. If you don't know the Google API Key, please see [Google document](https://cloud.google.com/docs/authentication/api-keys).
 ```
 static final String API_KEY = "YOUR_API_KEY";
 ```
-3. Run the app and you can use it.<br>
-4. see the following achievement.<br>
+### Step 3: Run the app and you can use it.<br>
+See the following achievement.<br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/1.png)<br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/2.png)<br>
 
