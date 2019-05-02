@@ -6,11 +6,18 @@
 git clone https://github.com/changemyminds/GCP_TTS_APIKEY_Android.git
 ```
 ### Step 2: Set up API Key
-Go to [here](https://github.com/changemyminds/Google-Cloud-TTS-Android/blob/master/app/src/main/java/darren/gcptts/tts/gcp/Config.java) and change "YOUR_API_KEY" to your Google Cloud API Key. If you don't know the Google API Key, please see [Google document](https://cloud.google.com/docs/authentication/api-keys).
+Go to [here](https://github.com/changemyminds/Google-Cloud-TTS-Android/blob/master/app/src/main/java/darren/gcptts/tts/gcp/Config.java) and change "YOUR_API_KEY" to your Google Cloud API Key. 
 ```
 static final String API_KEY = "YOUR_API_KEY";
 ```
-### Step 3: Run the app and you can use it.<br>
+
+__Note__ <br>
+If you don't know the Google API Key, please see [Google document](https://cloud.google.com/docs/authentication/api-keys). <br>
+Don't forget your API-Key Application restrictions and API restrictions must select _None_ and _Don't restrict key_.<br>
+![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/0.png)<br>
+ 
+
+### Step 3: Run app<br>
 See the following achievement.<br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/1.png)<br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/2.png)<br>
