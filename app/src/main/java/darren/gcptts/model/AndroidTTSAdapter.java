@@ -1,9 +1,9 @@
-package darren.gcptts.tts;
+package darren.gcptts.model;
 
 import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
-import darren.gcptts.tts.android.AndroidTTS;
+import darren.gcptts.model.android.AndroidTTS;
 
 /**
  * Author: Changemyminds.

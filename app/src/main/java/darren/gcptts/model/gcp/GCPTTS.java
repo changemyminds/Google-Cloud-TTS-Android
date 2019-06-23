@@ -1,4 +1,4 @@
-package darren.gcptts.tts.gcp;
+package darren.gcptts.model.gcp;
 
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -61,6 +61,8 @@ public class GCPTTS {
                     .addParameter(mAudioConfig)
                     .build();
             new Thread(runnableSend).start();
+        } else {
+            speakFail(text, new NullPointerException("GcpVoice or AudioConfig does not setting"));
         }
     }
 

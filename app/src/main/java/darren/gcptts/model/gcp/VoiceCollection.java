@@ -1,7 +1,6 @@
-package darren.gcptts.tts.gcp;
+package darren.gcptts.model.gcp;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -85,6 +84,10 @@ public class VoiceCollection {
         }
 
         hashMap.clear();
+    }
+
+    public int size(){
+        return hashMap.size();
     }
 
 

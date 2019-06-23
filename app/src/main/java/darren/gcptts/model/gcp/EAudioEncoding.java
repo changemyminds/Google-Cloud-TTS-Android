@@ -1,4 +1,4 @@
-package darren.gcptts.tts.gcp;
+package darren.gcptts.model.gcp;
 
 /**
  * Author: Changemyminds.

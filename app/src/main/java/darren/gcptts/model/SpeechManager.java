@@ -1,4 +1,4 @@
-package darren.gcptts.tts;
+package darren.gcptts.model;
 
 import java.io.Closeable;
 import java.io.IOException;

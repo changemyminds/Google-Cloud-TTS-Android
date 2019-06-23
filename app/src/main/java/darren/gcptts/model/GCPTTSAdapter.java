@@ -1,8 +1,8 @@
-package darren.gcptts.tts;
+package darren.gcptts.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import darren.gcptts.tts.gcp.GCPTTS;
+import darren.gcptts.model.gcp.GCPTTS;
 
 /**
  * Author: Changemyminds.

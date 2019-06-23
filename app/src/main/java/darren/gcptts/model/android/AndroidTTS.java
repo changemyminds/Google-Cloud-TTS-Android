@@ -1,4 +1,4 @@
-package darren.gcptts.tts.android;
+package darren.gcptts.model.android;
 
 import android.content.Context;
 import android.os.Build;

@@ -1,10 +1,5 @@
-package darren.gcptts.tts.gcp;
+package darren.gcptts.model.gcp;
 
-import android.util.Log;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;

@@ -1,4 +1,4 @@
-package darren.gcptts.tts.gcp;
+package darren.gcptts.model.gcp;
 
 import org.json.JSONException;
 import org.json.JSONObject;
