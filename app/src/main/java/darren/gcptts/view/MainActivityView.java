@@ -1,10 +1,9 @@
 package darren.gcptts.view;
 
-import android.content.Context;
 import android.content.Intent;
 
 /**
- * Author: 張恩碩.
+ * Author: Changemyminds.
  * Date: 2019/6/23.
  * Description:
  * Reference:

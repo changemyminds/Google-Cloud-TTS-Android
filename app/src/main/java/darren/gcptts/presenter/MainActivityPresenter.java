@@ -11,7 +11,7 @@ import com.google.gson.JsonParser;
 import java.util.Locale;
 import darren.gcptts.model.AndroidTTSAdapter;
 import darren.gcptts.model.GCPTTSAdapter;
-import darren.gcptts.model.SpeechManagerTTS;
+import darren.gcptts.model.SpeechManager;
 import darren.gcptts.model.android.AndroidVoice;
 import darren.gcptts.model.gcp.AudioConfig;
 import darren.gcptts.model.gcp.EAudioEncoding;
@@ -22,7 +22,7 @@ import darren.gcptts.model.gcp.VoiceList;
 import darren.gcptts.view.MainActivityView;
 
 /**
- * Author: 張恩碩.
+ * Author: Changemyminds.
  * Date: 2019/6/23.
  * Description:
  * Reference:
@@ -31,7 +31,6 @@ public class MainActivityPresenter implements VoiceList.IVoiceListener {
     private static final String TAG = "MainActivityPresenter";
     private static final int TEXT_TO_SPEECH_CODE = 0x100;
 
-    // 再點一下退出程式
     private static final long WAIT_TIME = 2000L;
     private long TOUCH_TIME = 0;
 
@@ -40,7 +39,7 @@ public class MainActivityPresenter implements VoiceList.IVoiceListener {
     private VoiceList mVoiceList;
     private VoiceCollection mVoiceCollection;
 
-    private SpeechManagerTTS mSpeechManagerGCPTTS;
+    private SpeechManager mSpeechManager;
     private GCPTTSAdapter mGCPTTSAdapter;
 
     public MainActivityPresenter(MainActivityView view) {
@@ -48,21 +47,21 @@ public class MainActivityPresenter implements VoiceList.IVoiceListener {
         mVoiceList = new VoiceList();
         mVoiceList.addVoiceListener(this);
 
-        mSpeechManagerGCPTTS = new SpeechManagerTTS();
+        mSpeechManager = new SpeechManager();
 
         // init GCPTTSAdapter and set default
         mGCPTTSAdapter = new GCPTTSAdapter();
-        mSpeechManagerGCPTTS.setSpeech(mGCPTTSAdapter);
+        mSpeechManager.setSpeech(mGCPTTSAdapter);
     }
 
     public void exitApp() {
         if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
-            // 退出應用程式
+            // exit app
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(0);
         } else {
             TOUCH_TIME = System.currentTimeMillis();
-            mView.makeToast("再按一次返回離開", false);
+            mView.makeToast("Please click BACK again to exit", false);
         }
     }
 
@@ -78,9 +77,9 @@ public class MainActivityPresenter implements VoiceList.IVoiceListener {
                 androidTTSAdapter.setAndroidVoice(androidVoice);
 
                 // set the next handler
-                SpeechManagerTTS androidTTSManager = new SpeechManagerTTS();
+                SpeechManager androidTTSManager = new SpeechManager();
                 androidTTSManager.setSpeech(androidTTSAdapter);
-                mSpeechManagerGCPTTS.setSupervisor(androidTTSManager);
+                mSpeechManager.setSupervisor(androidTTSManager);
             } else {
                 mView.makeToast("You do not have the text to speech file you have to install", true);
                 Intent installIntent = new Intent();
@@ -174,31 +173,31 @@ public class MainActivityPresenter implements VoiceList.IVoiceListener {
     }
 
     public void startSpeak(String text) {
-        mSpeechManagerGCPTTS.stopSpeak();
+        mSpeechManager.stopSpeak();
         if (mVoiceCollection == null || mVoiceCollection.size() == 0) {
             mView.makeToast("Loading Voice Error, please check network or API_KEY.", true);
         } else {
             initGCPTTSVoice();
         }
 
-        mSpeechManagerGCPTTS.startSpeak(text);
+        mSpeechManager.startSpeak(text);
     }
 
     public void stopSpeak() {
-        mSpeechManagerGCPTTS.stopSpeak();
+        mSpeechManager.stopSpeak();
     }
 
     public void resumeSpeak() {
-        mSpeechManagerGCPTTS.resume();
+        mSpeechManager.resume();
     }
 
     public void pauseSpeak() {
-        mSpeechManagerGCPTTS.pause();
+        mSpeechManager.pause();
     }
 
     public void disposeSpeak() {
-        mSpeechManagerGCPTTS.dispose();
-        mSpeechManagerGCPTTS = null;
+        mSpeechManager.dispose();
+        mSpeechManager = null;
     }
 }
 

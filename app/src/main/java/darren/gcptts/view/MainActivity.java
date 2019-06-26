@@ -1,14 +1,10 @@
 package darren.gcptts.view;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,26 +14,8 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import java.util.Locale;
-
 import darren.gcptts.R;
 import darren.gcptts.presenter.MainActivityPresenter;
-import darren.gcptts.model.SpeechManagerTTS;
-import darren.gcptts.model.AndroidTTSAdapter;
-import darren.gcptts.model.android.AndroidVoice;
-import darren.gcptts.model.gcp.AudioConfig;
-import darren.gcptts.model.gcp.EAudioEncoding;
-import darren.gcptts.model.gcp.ESSMLlVoiceGender;
-import darren.gcptts.model.GCPTTSAdapter;
-import darren.gcptts.model.gcp.GCPVoice;
-import darren.gcptts.model.gcp.VoiceCollection;
-import darren.gcptts.model.gcp.VoiceList;
 
 /**
  * Author: Changemyminds.
@@ -46,8 +24,6 @@ import darren.gcptts.model.gcp.VoiceList;
  * Reference:
  */
 public class MainActivity extends AppCompatActivity implements MainActivityView {
-
-
     private MainActivityPresenter mPresenter;
 
     private ArrayAdapter<String> mAdapterLanguage;
