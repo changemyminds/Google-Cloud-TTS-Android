@@ -61,7 +61,7 @@ public class MainActivityPresenter implements VoiceList.IVoiceListener {
             System.exit(0);
         } else {
             TOUCH_TIME = System.currentTimeMillis();
-            mView.makeToast("Please click BACK again to exit", false);
+            mView.makeToast("Press back again to Exit", false);
         }
     }
 
