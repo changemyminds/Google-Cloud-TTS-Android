@@ -3,7 +3,7 @@
 
 ### Step 1: Download file 
 ```
-git clone https://github.com/changemyminds/GCP_TTS_APIKEY_Android.git
+git clone https://github.com/changemyminds/Google-Cloud-TTS-Android.git
 ```
 ### Step 2: Set up API Key
 Go to [here](https://github.com/changemyminds/Google-Cloud-TTS-Android/blob/master/app/src/main/java/darren/gcptts/model/gcp/Config.java) and change "YOUR_API_KEY" to your Google Cloud API Key. 
