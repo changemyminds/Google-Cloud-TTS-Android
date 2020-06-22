@@ -1,4 +1,4 @@
-package darren.gcptts.model.gcp;
+package darren.googlecloudtts;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class VoiceMessage {
     private Input mInput;
-    private GCPVoice mGCPVoice;
+    private GoogleCloudVoice mGCPVoice;
     private AudioConfig mAudioConfig;
 
     private List<VoiceParameter> mVoiceParameters;
@@ -42,7 +42,7 @@ public class VoiceMessage {
         }
 
         @Deprecated
-        public Builder add(GCPVoice GCPVoice) {
+        public Builder add(GoogleCloudVoice GCPVoice) {
             mVoiceMessage.mVoiceParameters.add(GCPVoice);
             return this;
         }

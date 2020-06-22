@@ -1,4 +1,4 @@
-package darren.gcptts.model.gcp;
+package darren.googlecloudtts;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,14 +13,9 @@ public class Input implements VoiceParameter {
     private String mText;
     private boolean mIsEnableSSML;
 
-    Input(String text) {
+    public Input(String text) {
         mText = text;
         mIsEnableSSML = false;
-    }
-
-    public Input(String text, boolean isSSML) {
-        mText = text;
-        mIsEnableSSML = isSSML;
     }
 
     @Override

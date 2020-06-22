@@ -1,7 +1,9 @@
-package darren.gcptts.model.gcp;
+package darren.googlecloudtts;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import darren.googlecloudtts.VoiceParameter;
 
 /**
  * Author: Changemyminds.
@@ -9,28 +11,18 @@ import org.json.JSONObject;
  * Description:
  * Reference:
  */
-public class GCPVoice implements VoiceParameter {
+public class GoogleCloudVoice implements VoiceParameter {
     private String mLanguageCode;
     private String mName;
     private ESSMLlVoiceGender mESSMLlGender;
     private int mNaturalSampleRateHertz;
 
-    public GCPVoice(String languageCode, String name) {
-        mLanguageCode = languageCode;
-        mName = name;
-        mESSMLlGender = ESSMLlVoiceGender.NONE;
-        mNaturalSampleRateHertz = 0;
+    public GoogleCloudVoice(String languageCode, String name) {
+        this(languageCode, name, ESSMLlVoiceGender.NONE, 0);
     }
 
-    public GCPVoice(String languageCode, String name, ESSMLlVoiceGender eSSMLlGender) {
-        mLanguageCode = languageCode;
-        mName = name;
-        mESSMLlGender = eSSMLlGender;
-        mNaturalSampleRateHertz = 0;
-    }
-
-    public GCPVoice(String languageCode, String name, ESSMLlVoiceGender eSSMLlGender,
-                    int naturalSampleRateHertz) {
+    public GoogleCloudVoice(String languageCode, String name, ESSMLlVoiceGender eSSMLlGender,
+                            int naturalSampleRateHertz) {
         mLanguageCode = languageCode;
         mName = name;
         mESSMLlGender = eSSMLlGender;

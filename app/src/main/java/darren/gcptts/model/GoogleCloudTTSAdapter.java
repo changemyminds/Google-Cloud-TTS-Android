@@ -2,7 +2,8 @@ package darren.gcptts.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import darren.gcptts.model.gcp.GCPTTS;
+import darren.googlecloudtts.GoogleCloudAPIConfig;
+import darren.googlecloudtts.GoogleCloudTTS;
 
 /**
  * Author: Changemyminds.
@@ -10,11 +11,11 @@ import darren.gcptts.model.gcp.GCPTTS;
  * Description:
  * Reference:
  */
-public class GCPTTSAdapter extends GCPTTS implements ISpeech, GCPTTS.ISpeakListener {
-    private List<ISpeechListener> mSpeechListeners;
+public class GoogleCloudTTSAdapter extends GoogleCloudTTS implements ISpeech, GoogleCloudTTS.ISpeakListener {
+    private List<ISpeechListener> mSpeechListeners = new ArrayList<>();
 
-    public GCPTTSAdapter() {
-        mSpeechListeners = new ArrayList<>();
+    public GoogleCloudTTSAdapter(GoogleCloudAPIConfig apiConfig) {
+        super(apiConfig);
         addSpeakListener(this);
     }
 

@@ -1,4 +1,4 @@
-package darren.gcptts.model.gcp;
+package darren.googlecloudtts;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,21 +11,20 @@ import java.util.List;
  * Reference:
  */
 public class VoiceCollection {
-    HashMap<String, List<GCPVoice>> hashMap;
+    private HashMap<String, List<GoogleCloudVoice>> hashMap = new HashMap<>();
 
     public VoiceCollection() {
-        hashMap = new HashMap<>();
     }
 
-    public void add(String language, GCPVoice gcpVoice) {
+    public void add(String language, GoogleCloudVoice gcpVoice) {
         if (hashMap.get(language) == null) {
-            List<GCPVoice> list = new ArrayList<>();
+            List<GoogleCloudVoice> list = new ArrayList<>();
             list.add(gcpVoice);
             hashMap.put(language, list);
             return;
         }
 
-        List<GCPVoice> list = hashMap.get(language);
+        List<GoogleCloudVoice> list = hashMap.get(language);
         list.add(gcpVoice);
     }
 
@@ -45,15 +44,15 @@ public class VoiceCollection {
         }
 
         List<String> names = new ArrayList<>();
-        List<GCPVoice> gcpVoices = hashMap.get(language);
-        for (GCPVoice gcpVoice : gcpVoices) {
+        List<GoogleCloudVoice> gcpVoices = hashMap.get(language);
+        for (GoogleCloudVoice gcpVoice : gcpVoices) {
             names.add(gcpVoice.getName());
         }
 
         return names.toArray(new String[names.size()]);
     }
 
-    public List<GCPVoice> getGCPVoices(String language) {
+    public List<GoogleCloudVoice> getGCPVoices(String language) {
         if (hashMap.get(language) == null) {
             return null;
         }
@@ -61,14 +60,14 @@ public class VoiceCollection {
         return hashMap.get(language);
     }
 
-    public GCPVoice getGCPVoice(String language, String name) {
+    public GoogleCloudVoice getGCPVoice(String language, String name) {
         if (language == null || language.length() == 0 ||
                 name == null || name.length() == 0 || hashMap.get(language) == null) {
             return null;
         }
 
-        List<GCPVoice> gcpVoices = hashMap.get(language);
-        for (GCPVoice gcpVoice : gcpVoices) {
+        List<GoogleCloudVoice> gcpVoices = hashMap.get(language);
+        for (GoogleCloudVoice gcpVoice : gcpVoices) {
             if (gcpVoice.getName().compareTo(name) == 0) {
                 return gcpVoice;
             }
@@ -78,15 +77,15 @@ public class VoiceCollection {
     }
 
     public void clear() {
-        for (HashMap.Entry<String, List<GCPVoice>> entry : hashMap.entrySet()) {
-            List<GCPVoice> gcpVoices = entry.getValue();
+        for (HashMap.Entry<String, List<GoogleCloudVoice>> entry : hashMap.entrySet()) {
+            List<GoogleCloudVoice> gcpVoices = entry.getValue();
             gcpVoices.clear();
         }
 
         hashMap.clear();
     }
 
-    public int size(){
+    public int size() {
         return hashMap.size();
     }
 

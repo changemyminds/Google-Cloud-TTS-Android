@@ -1,8 +1,10 @@
-package darren.gcptts.view;
+package darren.gcptts.main;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,8 +16,8 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import darren.gcptts.R;
-import darren.gcptts.presenter.MainActivityPresenter;
 
 /**
  * Author: Changemyminds.
@@ -23,8 +25,14 @@ import darren.gcptts.presenter.MainActivityPresenter;
  * Description:
  * Reference:
  */
-public class MainActivity extends AppCompatActivity implements MainActivityView {
-    private MainActivityPresenter mPresenter;
+public class MainActivity extends AppCompatActivity
+        implements MainContract.IView {
+    private static final long WAIT_TIME = 2000L;
+    private static final int TEXT_TO_SPEECH_CODE = 0x100;
+
+    private long TOUCH_TIME = 0;
+
+    private MainContract.IPresenter mPresenter;
 
     private ArrayAdapter<String> mAdapterLanguage;
     private ArrayAdapter<String> mAdapterStyle;
@@ -49,14 +57,16 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         mSeekBarPitch.setProgress(2000);
         mSeekBarSpeakRate.setProgress(75);
-        mPresenter = new MainActivityPresenter(this);
-        mPresenter.initGCPTTSSettings();
-        mPresenter.initAndroidTTSSetting();
+        mPresenter = new MainPresenter(this);
+        mPresenter.onCreate();
+
+        // init android tts
+        initAndroidTTS();
     }
 
     @Override
     protected void onDestroy() {
-        mPresenter.disposeSpeak();
+        mPresenter.onDestroy();
         super.onDestroy();
     }
 
@@ -93,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         {
             mSeekBarPitch.setProgress(2000);
             mSeekBarSpeakRate.setProgress(75);
-            mPresenter.initGCPTTSSettings();
+            mPresenter.loadGoogleCloudTTS();
         });
         mButtonSpeakStop.setOnClickListener((view) -> mPresenter.stopSpeak());
     }
@@ -101,38 +111,43 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mPresenter.onTextToSpeechResult(this, requestCode, resultCode);
+
+        // init android tts
+        if (requestCode == TEXT_TO_SPEECH_CODE) {
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                mPresenter.initAndroidTTS();
+                return;
+            }
+
+            makeToast("You do not have the text to speech file you have to install", true);
+            Intent installIntent = new Intent();
+            installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+            startActivity(installIntent);
+        }
     }
 
     public void onBackPressed() {
-        mPresenter.exitApp();
+        exitApp();
     }
 
     @Override
-    public void setAdapterLanguage(String[] languages) {
+    public void setLanguages(final String[] languages) {
         if (languages == null) return;
 
         mAdapterLanguage = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item
                 , languages);
         mAdapterLanguage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    }
 
-    @Override
-    public void setSpinnerLanguage(final String[] languages) {
-        if (languages == null) return;
+        mSpinnerLanguage.setAdapter(mAdapterLanguage);
+        mSpinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mPresenter.selectLanguage(languages[position]);
+            }
 
-        invoke(() -> {
-            mSpinnerLanguage.setAdapter(mAdapterLanguage);
-            mSpinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    mPresenter.selectLanguage(languages[position]);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-            });
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
 
@@ -142,14 +157,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     @Override
-    public void setAdapterStyle(String[] styles) {
+    public void setStyles(final String[] styles) {
+        // init AdapterStyle
         mAdapterStyle = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item
                 , styles);
         mAdapterStyle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    }
 
-    @Override
-    public void setSpinnerStyle(final String[] styles) {
+        // init mSpinnerStyle
         mSpinnerStyle.setAdapter(mAdapterStyle);
         mSpinnerStyle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -165,12 +179,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @Override
     public void clearUI() {
-        invoke(() -> {
-            mSpinnerLanguage.setAdapter(null);
-            mSpinnerStyle.setAdapter(null);
-            setTextViewGender("");
-            setTextViewSampleRate("");
-        });
+        mSpinnerLanguage.setAdapter(null);
+        mSpinnerStyle.setAdapter(null);
+        setTextViewGender("");
+        setTextViewSampleRate("");
     }
 
     @Override
@@ -200,10 +212,38 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     @Override
     public void makeToast(String text, boolean longShow) {
-        invoke(() -> Toast.makeText(this, text, (longShow) ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show());
+        Toast.makeText(this, text, (longShow) ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
     }
 
-    private void invoke(Runnable runnable) {
+    @Override
+    public void invoke(Runnable runnable) {
         new Handler(Looper.getMainLooper()).post(runnable);
+    }
+
+    @Override
+    public void setPresenter(MainContract.IPresenter presenter) {
+        mPresenter = presenter;
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    private void exitApp() {
+        if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
+            // exit app
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
+        } else {
+            TOUCH_TIME = System.currentTimeMillis();
+            makeToast("Press back again to Exit", false);
+        }
+    }
+
+    private void initAndroidTTS() {
+        Intent checkIntent = new Intent();
+        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        startActivityForResult(checkIntent, TEXT_TO_SPEECH_CODE);
     }
 }

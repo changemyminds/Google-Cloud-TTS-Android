@@ -1,4 +1,4 @@
-package darren.gcptts.model.gcp;
+package darren.googlecloudtts;
 
 import org.json.JSONObject;
 

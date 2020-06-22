@@ -1,4 +1,4 @@
-package darren.gcptts.model.gcp;
+package darren.googlecloudtts;
 
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -23,41 +23,48 @@ import java.util.List;
  * Description:
  * Reference:
  */
-public class GCPTTS {
-    private static final String TAG = GCPTTS.class.getName();
+public class GoogleCloudTTS {
+    private static final String TAG = GoogleCloudTTS.class.getName();
 
     private List<ISpeakListener> mSpeakListeners = new ArrayList<>();
 
-    private GCPVoice mGCPVoice;
+    private GoogleCloudVoice mGoogleCloudVoice;
     private AudioConfig mAudioConfig;
+    private GoogleCloudAPIConfig mApiConfig;
+
+    private VoiceList mVoiceList;
+
     private String mMessage;
     private VoiceMessage mVoiceMessage;
     private MediaPlayer mMediaPlayer;
 
     private int mVoiceLength = -1;
 
-    public GCPTTS() {
+    public GoogleCloudTTS(GoogleCloudAPIConfig apiConfig) {
+        mApiConfig = apiConfig;
+        mVoiceList = new VoiceList(mApiConfig);
     }
 
-    public GCPTTS(GCPVoice gcpVoice, AudioConfig audioConfig) {
-        mGCPVoice = gcpVoice;
+    public VoiceList getVoiceList() {
+        return mVoiceList;
+    }
+
+    public GoogleCloudTTS setGoogleCloudVoice(GoogleCloudVoice gcpVoice) {
+        mGoogleCloudVoice = gcpVoice;
+        return this;
+    }
+
+    public GoogleCloudTTS setAudioConfig(AudioConfig audioConfig) {
         mAudioConfig = audioConfig;
-    }
-
-    public void setGCPVoice(GCPVoice gcpVoice) {
-        mGCPVoice = gcpVoice;
-    }
-
-    public void setAudioConfig(AudioConfig audioConfig) {
-        mAudioConfig = audioConfig;
+        return this;
     }
 
     public void start(String text) {
-        if (mGCPVoice != null && mAudioConfig != null) {
+        if (mGoogleCloudVoice != null && mAudioConfig != null) {
             mMessage = text;
             mVoiceMessage = new VoiceMessage.Builder()
                     .addParameter(new Input(text))
-                    .addParameter(mGCPVoice)
+                    .addParameter(mGoogleCloudVoice)
                     .addParameter(mAudioConfig)
                     .build();
             new Thread(runnableSend).start();
@@ -75,8 +82,8 @@ public class GCPTTS {
             RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),
                     mVoiceMessage.toString());
             Request request = new Request.Builder()
-                    .url(Config.SYNTHESIZE_ENDPOINT)
-                    .addHeader(Config.API_KEY_HEADER, Config.API_KEY)
+                    .url(mApiConfig.getSynthesizeEndpoint())
+                    .addHeader(mApiConfig.getApiKeyHeader(), mApiConfig.getApiKey())
                     .addHeader("Content-Type", "application/json; charset=utf-8")
                     .post(body)
                     .build();
@@ -174,8 +181,16 @@ public class GCPTTS {
         mSpeakListeners.remove(iSpeakListener);
     }
 
-    public void removeSpeakListener() {
-        mSpeakListeners.clear();
+    public void addVoiceListener(VoiceList.IVoiceListener listener) {
+        mVoiceList.addVoiceListener(listener);
+    }
+
+    public void removeVoiceListener(VoiceList.IVoiceListener listener) {
+        mVoiceList.removeVoiceListener(listener);
+    }
+
+    public void loadVoiceList() {
+        mVoiceList.start();
     }
 
     public interface ISpeakListener {

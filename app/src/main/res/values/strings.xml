@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GCPTTS</string>
+    <string name="app_name">Google Cloud Text To Speech</string>
     <string name="ettPtText">A sight or prospect, typically of attractive natural scenery, that can be taken in by the eye from a particular place.</string>
     <string name="tvwPtCountry">Language:</string>
     <string name="tvwPtStyle">Style:</string>
