@@ -76,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.btnIdRefresh)
     Button mButtonRefresh;
 
-    private GoogleCloudAPIConfig mApiConfig = new GoogleCloudAPIConfig(BuildConfig.API_KEY);
-    private GoogleCloudTTS mGoogleCloudTTS;
     private MainViewModel mMainViewModel;
 
     @Override
@@ -88,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         initViewValues();
 
-        mGoogleCloudTTS = GoogleCloudTTSFactory.create(mApiConfig);
-        mMainViewModel = new MainViewModel(getApplication(), mGoogleCloudTTS);
+        GoogleCloudTTS googleCloudTTS = GoogleCloudTTSFactory.create(BuildConfig.API_KEY);
+        mMainViewModel = new MainViewModel(getApplication(), googleCloudTTS);
 
         onLoading();
     }
