@@ -4,9 +4,6 @@ import android.content.Context;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Author: Changemyminds.
  * Date: 2018/6/25.

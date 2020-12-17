@@ -1,7 +1,6 @@
 package darren.gcptts.model;
 
 import android.content.Context;
-
 import darren.gcptts.model.androidtts.AndroidTTS;
 
 /**

@@ -3,9 +3,6 @@ package darren.gcptts.main;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.support.annotation.NonNull;
-
-import java.util.function.Supplier;
-
 import darren.googlecloudtts.GoogleCloudTTS;
 import darren.googlecloudtts.VoicesList;
 import darren.googlecloudtts.parameter.AudioConfig;
@@ -13,7 +10,6 @@ import darren.googlecloudtts.parameter.AudioEncoding;
 import darren.googlecloudtts.parameter.VoiceSelectionParams;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
-import io.reactivex.rxjava3.core.SingleOnSubscribe;
 
 /**
  * Author: Changemyminds.
