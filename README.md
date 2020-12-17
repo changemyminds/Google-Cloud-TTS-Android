@@ -1,4 +1,5 @@
 # Google Cloud Platform TTS use API-KEY on Android.
+
 ## How to use it?
 
 ### Step 1: Download file 
@@ -29,6 +30,32 @@ Here prompt the Google API KEY setting. <br>
 See the following achievement.<br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/1.png)<br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/2.png)<br>
+
+## Google Cloud Text To Speech Libs Example
+```
+// Set the ApiConfig and create GoogleCloudTTS
+GoogleCloudAPIConfig apiConfig = new GoogleCloudAPIConfig("Your-Api-Key");
+GoogleCloudTTS googleCloudTTS = GoogleCloudTTSFactory.create(apiConfig);
+
+// load google cloud VoicesList    
+VoicesList voicesList = googleCloudTTS.load();
+
+// set google cloud voice
+googleCloudTTS.setGoogleCloudVoice(new VoiceSelectionParams("select-languageCode", "select-name"))
+    .setAudioConfig(new AudioConfig(select-AudioEncoding, select-speakRate, select-pitch));
+
+// start speak
+googleCloudTTS.start("say something");
+
+// stop speak
+googleCloudTTS.stop();
+
+// pause speak
+googleCloudTTS.pause();
+
+// resume speak
+googleCloudTTS.resume();
+```
 
 ## Test language and voice
 If you want to test voice or find support language, you can go [here](https://cloud.google.com/text-to-speech/) to test online.
