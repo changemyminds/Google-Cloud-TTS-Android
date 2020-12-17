@@ -48,7 +48,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void initTTSVoice(String languageCode, String name, float pitch, float speakRate) {
-        mGoogleCloudTTS.setGoogleCloudVoice(new VoiceSelectionParams(languageCode, name))
+        mGoogleCloudTTS.setVoiceSelectionParams(new VoiceSelectionParams(languageCode, name))
                 .setAudioConfig(new AudioConfig(
                         AudioEncoding.MP3,
                         speakRate,

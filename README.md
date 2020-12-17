@@ -31,19 +31,26 @@ See the following achievement.<br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/1.png)<br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/2.png)<br>
 
-## Google Cloud Text To Speech Libs Example
+## Google Cloud Text To Speech Libs Usage
+Set the ApiKey and create GoogleCloudTTS.
 ```
-// Set the ApiConfig and create GoogleCloudTTS
 GoogleCloudAPIConfig apiConfig = new GoogleCloudAPIConfig("Your-Api-Key");
 GoogleCloudTTS googleCloudTTS = GoogleCloudTTSFactory.create(apiConfig);
+```
 
-// load google cloud VoicesList    
+Load google cloud VoicesList.
+```    
 VoicesList voicesList = googleCloudTTS.load();
+```
 
-// set google cloud voice
-googleCloudTTS.setGoogleCloudVoice(new VoiceSelectionParams("select-languageCode", "select-name"))
+Set language, Rate and pitch parameter.
+```
+googleCloudTTS.setVoiceSelectionParams(new VoiceSelectionParams("select-languageCode", "select-name"))
     .setAudioConfig(new AudioConfig(select-AudioEncoding, select-speakRate, select-pitch));
+```
 
+Speech method.
+```
 // start speak
 googleCloudTTS.start("say something");
 

@@ -26,7 +26,7 @@ public class GoogleCloudTTS implements AutoCloseable {
     private SynthesizeApi mSynthesizeApi;
     private VoicesApi mVoicesApi;
 
-    private VoiceSelectionParams mGoogleCloudVoice;
+    private VoiceSelectionParams mVoiceSelectionParams;
     private AudioConfig mAudioConfig;
 
     private MediaPlayer mMediaPlayer;
@@ -38,8 +38,8 @@ public class GoogleCloudTTS implements AutoCloseable {
         mVoicesApi = voicesApi;
     }
 
-    public GoogleCloudTTS setGoogleCloudVoice(VoiceSelectionParams gcpVoice) {
-        mGoogleCloudVoice = gcpVoice;
+    public GoogleCloudTTS setVoiceSelectionParams(VoiceSelectionParams voiceSelectionParams) {
+        mVoiceSelectionParams = voiceSelectionParams;
         return this;
     }
 
@@ -66,15 +66,15 @@ public class GoogleCloudTTS implements AutoCloseable {
     }
 
     public void start(String text) {
-        if (mGoogleCloudVoice == null) {
-            throw new NullPointerException("You forget to setGoogleCloudVoice()");
+        if (mVoiceSelectionParams == null) {
+            throw new NullPointerException("You forget to setVoiceSelectionParams()");
         }
 
         if (mAudioConfig == null) {
             throw new NullPointerException("You forget to setAudioConfig()");
         }
 
-        SynthesizeRequest request = new SynthesizeRequest(new SynthesisInput(text), mGoogleCloudVoice, mAudioConfig);
+        SynthesizeRequest request = new SynthesizeRequest(new SynthesisInput(text), mVoiceSelectionParams, mAudioConfig);
 
         try {
             SynthesizeResponse response = mSynthesizeApi.get(request);
