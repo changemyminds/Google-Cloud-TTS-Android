@@ -1,4 +1,4 @@
-package darren.gcptts.model.android;
+package darren.gcptts.model.androidtts;
 
 import java.util.Locale;
 

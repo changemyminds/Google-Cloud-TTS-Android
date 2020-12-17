@@ -1,23 +1,34 @@
 package darren.gcptts.main;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
-import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import darren.gcptts.BuildConfig;
 import darren.gcptts.R;
+import darren.googlecloudtts.GoogleCloudAPIConfig;
+import darren.googlecloudtts.GoogleCloudTTS;
+import darren.googlecloudtts.GoogleCloudTTSFactory;
+import darren.googlecloudtts.VoicesList;
+import darren.googlecloudtts.parameter.VoiceSelectionParams;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.CompletableObserver;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * Author: Changemyminds.
@@ -25,124 +36,168 @@ import darren.gcptts.R;
  * Description:
  * Reference:
  */
-public class MainActivity extends AppCompatActivity
-        implements MainContract.IView {
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
+
     private static final long WAIT_TIME = 2000L;
     private static final int TEXT_TO_SPEECH_CODE = 0x100;
 
     private long TOUCH_TIME = 0;
 
-    private MainContract.IPresenter mPresenter;
+    @BindView(R.id.snrIdLanguage)
+    Spinner mSpinnerLanguage;
 
-    private ArrayAdapter<String> mAdapterLanguage;
-    private ArrayAdapter<String> mAdapterStyle;
-    private Spinner mSpinnerLanguage;
-    private Spinner mSpinnerStyle;
+    @BindView(R.id.snrIdStyle)
+    Spinner mSpinnerStyle;
 
-    private EditText mEditText;
-    private TextView mTextViewGender;
-    private TextView mTextViewSampleRate;
-    private SeekBar mSeekBarPitch;
-    private SeekBar mSeekBarSpeakRate;
-    private Button mButtonSpeak;
-    private Button mButtonSpeakPause;
-    private Button mButtonSpeakStop;
-    private Button mButtonRefresh;
+    @BindView(R.id.ettIdText)
+    EditText mEditText;
+
+    @BindView(R.id.tvwIdGender)
+    TextView mTextViewGender;
+
+    @BindView(R.id.tvwIdSampleRate)
+    TextView mTextViewSampleRate;
+
+    @BindView(R.id.sbrIdPitch)
+    SeekBar mSeekBarPitch;
+
+    @BindView(R.id.sbrIdSpeakRate)
+    SeekBar mSeekBarSpeakRate;
+
+    @BindView(R.id.btnIdSpeak)
+    Button mButtonSpeak;
+
+    @BindView(R.id.btnIdPauseAndResume)
+    Button mButtonSpeakPause;
+
+    @BindView(R.id.btnIdStop)
+    Button mButtonSpeakStop;
+
+    @BindView(R.id.btnIdRefresh)
+    Button mButtonRefresh;
+
+    private GoogleCloudAPIConfig mApiConfig = new GoogleCloudAPIConfig(BuildConfig.API_KEY);
+    private GoogleCloudTTS mGoogleCloudTTS;
+    private MainViewModel mMainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        buildViews();
 
-        mSeekBarPitch.setProgress(2000);
-        mSeekBarSpeakRate.setProgress(75);
-        mPresenter = new MainPresenter(this);
-        mPresenter.onCreate();
+        ButterKnife.bind(this);
+        initViewValues();
 
-        // init android tts
-        initAndroidTTS();
+        mGoogleCloudTTS = GoogleCloudTTSFactory.create(mApiConfig);
+        mMainViewModel = new MainViewModel(getApplication(), mGoogleCloudTTS);
+
+        onLoading();
     }
 
     @Override
     protected void onDestroy() {
-        mPresenter.onDestroy();
+        mMainViewModel.dispose();
         super.onDestroy();
     }
 
-    private void buildViews() {
-        mEditText = findViewById(R.id.ettIdText);
-        mSpinnerLanguage = findViewById(R.id.snrIdLanguage);
-        mSpinnerStyle = findViewById(R.id.snrIdStyle);
-        mTextViewGender = findViewById(R.id.tvwIdGender);
-        mTextViewSampleRate = findViewById(R.id.tvwIdSampleRate);
-        mSeekBarPitch = findViewById(R.id.sbrIdPitch);
-        mSeekBarSpeakRate = findViewById(R.id.sbrIdSpeakRate);
-        mButtonSpeak = findViewById(R.id.btnIdSpeak);
-        mButtonSpeakPause = findViewById(R.id.btnIdPauseAndResume);
-        mButtonSpeakStop = findViewById(R.id.btnIdStop);
-        mButtonRefresh = findViewById(R.id.btnIdRefresh);
-
+    private void initViewValues() {
         mSeekBarPitch.setMax(4000);
         mSeekBarPitch.setProgress(2000);
 
         mSeekBarSpeakRate.setMax(375);
         mSeekBarSpeakRate.setProgress(75);
+    }
 
-        mButtonSpeak.setOnClickListener((view) -> mPresenter.startSpeak(mEditText.getText().toString()));
-        mButtonSpeakPause.setOnClickListener((view) -> {
-            if (mButtonSpeakPause.getText().toString().compareTo(getResources().getString(R.string.btnPtSpeechPause)) == 0) {
-                mPresenter.pauseSpeak();
-                mButtonSpeakPause.setText(getResources().getString(R.string.btnPtSpeechResume));
-            } else {
-                mPresenter.resumeSpeak();
-                mButtonSpeakPause.setText(getResources().getString(R.string.btnPtSpeechPause));
-            }
-        });
-        mButtonRefresh.setOnClickListener((view) ->
-        {
-            mSeekBarPitch.setProgress(2000);
-            mSeekBarSpeakRate.setProgress(75);
-            mPresenter.loadGoogleCloudTTS();
-        });
-        mButtonSpeakStop.setOnClickListener((view) -> mPresenter.stopSpeak());
+    @OnClick(R.id.btnIdSpeak)
+    void onSpeak() {
+        mMainViewModel.speak(mEditText.getText().toString())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(t -> initTTSVoice())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        makeToast("Speak success", false);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        makeToast("Speak failed " + e.getMessage(), true);
+                        Log.e(TAG, "Speak failed", e);
+                    }
+                });
+    }
+
+    @OnClick(R.id.btnIdPauseAndResume)
+    void onPauseOrResume() {
+        boolean isPaused = mButtonSpeakPause.getText().toString().equals(getResources().getString(R.string.btnPtSpeechPause));
+        if (isPaused) {
+            mMainViewModel.pause();
+            mButtonSpeakPause.setText(getResources().getString(R.string.btnPtSpeechResume));
+            return;
+        }
+
+        mMainViewModel.resume();
+        mButtonSpeakPause.setText(getResources().getString(R.string.btnPtSpeechPause));
+    }
+
+    @OnClick(R.id.btnIdRefresh)
+    void onRefresh() {
+        onLoading();
+    }
+
+    private void onLoading() {
+        mMainViewModel.loading()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe((t) -> {
+                    mSeekBarPitch.setProgress(2000);
+                    mSeekBarSpeakRate.setProgress(75);
+                })
+                .subscribe(new SingleObserver<VoicesList>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                    }
+
+                    @Override
+                    public void onSuccess(@NonNull VoicesList voicesList) {
+                        setLanguages(voicesList.getLanguages());
+                        makeToast("Google Cloud voice update.", false);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        clearUI();
+                        makeToast("Loading Voice List Error, error code : " + e.getMessage(), true);
+                        Log.e(TAG, "Loading Voice List Error", e);
+                    }
+                });
+
+
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // init android tts
-        if (requestCode == TEXT_TO_SPEECH_CODE) {
-            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                mPresenter.initAndroidTTS();
-                return;
-            }
-
-            makeToast("You do not have the text to speech file you have to install", true);
-            Intent installIntent = new Intent();
-            installIntent.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-            startActivity(installIntent);
-        }
-    }
-
     public void onBackPressed() {
         exitApp();
     }
 
-    @Override
-    public void setLanguages(final String[] languages) {
-        if (languages == null) return;
-
-        mAdapterLanguage = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item
+    private void setLanguages(final String[] languages) {
+        ArrayAdapter<String> adapterLanguage = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item
                 , languages);
-        mAdapterLanguage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapterLanguage.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        mSpinnerLanguage.setAdapter(mAdapterLanguage);
+        mSpinnerLanguage.setAdapter(adapterLanguage);
         mSpinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mPresenter.selectLanguage(languages[position]);
+                String[] names = mMainViewModel.getNames(languages[position]);
+                setStyles(names);
             }
 
             @Override
@@ -151,24 +206,24 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    @Override
-    public String getSelectedLanguageText() {
+    private String getSelectedLanguageText() {
         return (mSpinnerLanguage.getSelectedItem() != null) ? mSpinnerLanguage.getSelectedItem().toString() : "";
     }
 
-    @Override
-    public void setStyles(final String[] styles) {
+    private void setStyles(final String[] styles) {
         // init AdapterStyle
-        mAdapterStyle = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item
+        ArrayAdapter<String> adapterStyle = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item
                 , styles);
-        mAdapterStyle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapterStyle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // init mSpinnerStyle
-        mSpinnerStyle.setAdapter(mAdapterStyle);
+        mSpinnerStyle.setAdapter(adapterStyle);
         mSpinnerStyle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mPresenter.selectStyle(styles[position]);
+                VoiceSelectionParams params = mMainViewModel.getVoiceSelectionParams(getSelectedLanguageText(), styles[position]);
+                setTextViewGender(params.getSsmlGender().toString());
+//                setTextViewSampleRate(String.valueOf(params.getNaturalSampleRateHertz()));
             }
 
             @Override
@@ -177,57 +232,35 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    @Override
-    public void clearUI() {
+    private void clearUI() {
         mSpinnerLanguage.setAdapter(null);
         mSpinnerStyle.setAdapter(null);
         setTextViewGender("");
         setTextViewSampleRate("");
     }
 
-    @Override
-    public String getSelectedStyleText() {
+    private String getSelectedStyleText() {
         return (mSpinnerStyle.getSelectedItem() != null) ? mSpinnerStyle.getSelectedItem().toString() : "";
     }
 
-    @Override
-    public void setTextViewGender(String gender) {
+    private void setTextViewGender(String gender) {
         mTextViewGender.setText(gender);
     }
 
-    @Override
-    public void setTextViewSampleRate(String sampleRate) {
+    private void setTextViewSampleRate(String sampleRate) {
         mTextViewSampleRate.setText(sampleRate);
     }
 
-    @Override
-    public int getProgressPitch() {
+    private int getProgressPitch() {
         return mSeekBarPitch.getProgress();
     }
 
-    @Override
-    public int getProgressSpeakRate() {
+    private int getProgressSpeakRate() {
         return mSeekBarSpeakRate.getProgress();
     }
 
-    @Override
-    public void makeToast(String text, boolean longShow) {
+    private void makeToast(String text, boolean longShow) {
         Toast.makeText(this, text, (longShow) ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void invoke(Runnable runnable) {
-        new Handler(Looper.getMainLooper()).post(runnable);
-    }
-
-    @Override
-    public void setPresenter(MainContract.IPresenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
     }
 
     private void exitApp() {
@@ -241,9 +274,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void initAndroidTTS() {
-        Intent checkIntent = new Intent();
-        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(checkIntent, TEXT_TO_SPEECH_CODE);
+    private void initTTSVoice() {
+        String languageCode = getSelectedLanguageText();
+        String name = getSelectedStyleText();
+        float pitch = ((float) (getProgressPitch() - 2000) / 100);
+        float speakRate = ((float) (getProgressSpeakRate() + 25) / 100);
+
+        mMainViewModel.initTTSVoice(languageCode, name, pitch, speakRate);
     }
 }

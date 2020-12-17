@@ -1,4 +1,4 @@
-package darren.googlecloudtts;
+package darren.googlecloudtts.parameter;
 
 /**
  * Author: Changemyminds.
@@ -6,14 +6,14 @@ package darren.googlecloudtts;
  * Description:
  * Reference:
  */
-public enum ESSMLlVoiceGender {
+public enum SsmlVoiceGender {
     SSML_VOICE_GENDER_UNSPECIFIED,
     MALE,
     FEMALE,
     NEUTRAL,
     NONE;
 
-    public static ESSMLlVoiceGender convert(String ssmlGender) {
+    public static SsmlVoiceGender convert(String ssmlGender) {
         if (ssmlGender.compareTo(SSML_VOICE_GENDER_UNSPECIFIED.toString()) == 0) {
             return SSML_VOICE_GENDER_UNSPECIFIED;
         }
@@ -24,8 +24,8 @@ public enum ESSMLlVoiceGender {
             return FEMALE;
         } else if (ssmlGender.compareTo(NEUTRAL.toString()) == 0) {
             return NEUTRAL;
-        } else {
-            return NONE;
         }
+
+        throw new NullPointerException("Can't find the ssmlGender " + ssmlGender);
     }
 }
