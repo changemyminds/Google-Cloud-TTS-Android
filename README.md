@@ -33,7 +33,7 @@ See the following achievement.<br>
 
 ## Google-Cloud-TTS-Android libs
 
-### Use the library to set gradle in your project
+### How to install it ?
 Step 1. Add the JitPack repository in your root build.gradle
 ```
 buildscript {
