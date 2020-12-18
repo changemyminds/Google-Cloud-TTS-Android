@@ -31,7 +31,26 @@ See the following achievement.<br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/1.png)<br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/2.png)<br>
 
-## Google Cloud Text To Speech Libs Usage
+## Google-Cloud-TTS-Android libs
+
+### Use the library to set gradle in your project
+Step 1. Add the JitPack repository to your build file
+```
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+Step 2. Add the dependency
+```
+dependencies {
+    implementation 'com.github.changemyminds:Google-Cloud-TTS-Android:Tag'
+}
+```
+### How to use it ?
+See the below sample.
 ```
 // Set the ApiKey and create GoogleCloudTTS.
 GoogleCloudTTS googleCloudTTS = GoogleCloudTTSFactory.create("YOUR_API_KEY");
@@ -40,11 +59,11 @@ GoogleCloudTTS googleCloudTTS = GoogleCloudTTSFactory.create("YOUR_API_KEY");
 VoicesList voicesList = googleCloudTTS.load();
 
 // Set language, Rate and pitch parameter.
-googleCloudTTS.setVoiceSelectionParams(new VoiceSelectionParams("select-languageCode", "select-name"))
-    .setAudioConfig(new AudioConfig(select-AudioEncoding, select-speakRate, select-pitch));
+googleCloudTTS.setVoiceSelectionParams(new VoiceSelectionParams("en-GB", "en-GB-Wavenet-A"))
+    .setAudioConfig(new AudioConfig(AudioEncoding.MP3, 0.35f , 10f));
     
 // start speak
-googleCloudTTS.start("say something");
+googleCloudTTS.start("you want speak something");
 
 // stop speak
 googleCloudTTS.stop();
@@ -56,7 +75,8 @@ googleCloudTTS.pause();
 googleCloudTTS.resume();
 ```
 
-## Test language and voice
+## Support Language
+### Test language and voice
 If you want to test voice or find support language, you can go [here](https://cloud.google.com/text-to-speech/) to test online.
 
 ## Reference
