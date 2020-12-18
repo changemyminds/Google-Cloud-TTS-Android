@@ -34,8 +34,12 @@ See the following achievement.<br>
 ## Google-Cloud-TTS-Android libs
 
 ### Use the library to set gradle in your project
-Step 1. Add the JitPack repository to your build file
+Step 1. Add the JitPack repository in your root build.gradle
 ```
+buildscript {
+    ...
+}
+
 allprojects {
 	repositories {
 		...
@@ -43,12 +47,17 @@ allprojects {
 	}
 }
 ```
-Step 2. Add the dependency
+Step 2. Add the dependency int your app build.gradle
 ```
+android {
+    ...
+}
+
 dependencies {
-    implementation 'com.github.changemyminds:Google-Cloud-TTS-Android:Tag'
+    implementation 'com.github.changemyminds:Google-Cloud-TTS-Android:1.0.0'
 }
 ```
+
 ### How to use it ?
 See the below sample.
 ```
