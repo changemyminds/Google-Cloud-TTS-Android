@@ -27,12 +27,9 @@ Here prompt the Google API KEY setting. <br>
 ![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/02.png)<br>
  
 ### Step 3: Run app<br>
-See the following achievement.<br>
-![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/1.png)<br>
-![image](https://github.com/changemyminds/GCP_TTS_ByAPIKEY/blob/master/images/2.png)<br>
+![image](images/demo.gif)<br>
 
 ## Google-Cloud-TTS-Android libs
-
 ### How to install it ?
 Step 1. Add the JitPack repository in your root build.gradle
 ```
