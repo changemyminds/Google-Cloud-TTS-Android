@@ -1,8 +1,5 @@
 package darren.googlecloudtts.parameter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * Author: Changemyminds.
  * Date: 2018/6/23.
@@ -21,7 +18,7 @@ public class VoiceSelectionParams {
     public VoiceSelectionParams(String languageCode, String name, SsmlVoiceGender eSSMLlGender) {
         this.languageCode = languageCode;
         this.name = name;
-        ssmlGender = eSSMLlGender;
+        this.ssmlGender = eSSMLlGender;
     }
 
     public String getLanguageCode() {

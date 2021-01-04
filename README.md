@@ -47,7 +47,7 @@ allprojects {
 	}
 }
 ```
-Step 2. Add the dependency int your app build.gradle
+Step 2. Add the dependency in your app build.gradle
 ```
 android {
     ...
@@ -64,11 +64,13 @@ See the below sample.
 // Set the ApiKey and create GoogleCloudTTS.
 GoogleCloudTTS googleCloudTTS = GoogleCloudTTSFactory.create("YOUR_API_KEY");
 
-// Load google cloud VoicesList.
+// Load google cloud VoicesList and select the languageCode and voiceName with index (0 ~ N).
 VoicesList voicesList = googleCloudTTS.load();
+String languageCode = voicesList.getLanguageCodes()[0];
+String voiceName = voicesList.getVoiceNames(languageCode)[0];
 
-// Set language, Rate and pitch parameter.
-googleCloudTTS.setVoiceSelectionParams(new VoiceSelectionParams("en-GB", "en-GB-Wavenet-A"))
+// Set languageCode and voiceName, Rate and pitch parameter.
+googleCloudTTS.setVoiceSelectionParams(new VoiceSelectionParams(languageCode, voiceName))
     .setAudioConfig(new AudioConfig(AudioEncoding.MP3, 0.35f , 10f));
     
 // start speak

@@ -1,8 +1,9 @@
 package darren.googlecloudtts.util;
 
 import com.google.gson.Gson;
-
-import java.lang.reflect.Type;
+import com.google.gson.reflect.TypeToken;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Author: Changemyminds.
@@ -12,12 +13,24 @@ import java.lang.reflect.Type;
  */
 public class GsonUtil {
     public static <T> T toObject(String json, Class<T> tClass) {
-        Gson gson = new Gson();
-        return gson.fromJson(json, tClass);
+        return getGson().fromJson(json, tClass);
     }
 
     public static String toJson(Object object) {
-        Gson gson = new Gson();
-        return gson.toJson(object);
+        return getGson().toJson(object);
+    }
+
+    public static <T> List<T> toList(String json, Class<T> tClass) {
+        return getGson().fromJson(json, new TypeToken<List<T>>() {
+        }.getType());
+    }
+
+    public static <T> Map<String, T> toMap(String json) {
+        return getGson().fromJson(json, new TypeToken<Map<String, T>>() {
+        }.getType());
+    }
+
+    private static Gson getGson() {
+        return new Gson();
     }
 }

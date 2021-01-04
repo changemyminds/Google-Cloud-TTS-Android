@@ -17,10 +17,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import darren.gcptts.BuildConfig;
 import darren.gcptts.R;
-import darren.googlecloudtts.GoogleCloudAPIConfig;
 import darren.googlecloudtts.GoogleCloudTTS;
 import darren.googlecloudtts.GoogleCloudTTSFactory;
-import darren.googlecloudtts.VoicesList;
+import darren.googlecloudtts.model.VoicesList;
 import darren.googlecloudtts.parameter.VoiceSelectionParams;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onSuccess(@NonNull VoicesList voicesList) {
-                        setLanguages(voicesList.getLanguages());
+                        setLanguages(voicesList.getLanguageCodes());
                         makeToast("Google Cloud voice update.", false);
                     }
 
@@ -193,8 +192,8 @@ public class MainActivity extends AppCompatActivity {
         mSpinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String[] names = mMainViewModel.getNames(languages[position]);
-                setStyles(names);
+                String[] voiceNames = mMainViewModel.getVoiceNames(languages[position]);
+                setStyles(voiceNames);
             }
 
             @Override
@@ -203,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private String getSelectedLanguageText() {
+    private String getSelectedLanguageCodeText() {
         return (mSpinnerLanguage.getSelectedItem() != null) ? mSpinnerLanguage.getSelectedItem().toString() : "";
     }
 
@@ -218,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         mSpinnerStyle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                VoiceSelectionParams params = mMainViewModel.getVoiceSelectionParams(getSelectedLanguageText(), styles[position]);
+                VoiceSelectionParams params = mMainViewModel.getVoiceSelectionParams(getSelectedLanguageCodeText(), styles[position]);
                 setTextViewGender(params.getSsmlGender().toString());
 //                setTextViewSampleRate(String.valueOf(params.getNaturalSampleRateHertz()));
             }
@@ -272,11 +271,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTTSVoice() {
-        String languageCode = getSelectedLanguageText();
-        String name = getSelectedStyleText();
+        String languageCode = getSelectedLanguageCodeText();
+        String voiceName = getSelectedStyleText();
         float pitch = ((float) (getProgressPitch() - 2000) / 100);
         float speakRate = ((float) (getProgressSpeakRate() + 25) / 100);
 
-        mMainViewModel.initTTSVoice(languageCode, name, pitch, speakRate);
+        mMainViewModel.initTTSVoice(languageCode, voiceName, pitch, speakRate);
     }
 }

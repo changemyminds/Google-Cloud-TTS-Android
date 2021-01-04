@@ -1,11 +1,10 @@
 package darren.googlecloudtts;
 
 import android.media.MediaPlayer;
-
 import java.io.IOException;
-
 import darren.googlecloudtts.api.SynthesizeApi;
 import darren.googlecloudtts.api.VoicesApi;
+import darren.googlecloudtts.model.VoicesList;
 import darren.googlecloudtts.parameter.AudioConfig;
 import darren.googlecloudtts.exception.ApiException;
 import darren.googlecloudtts.parameter.VoiceSelectionParams;
