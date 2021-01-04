@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.changemyminds:Google-Cloud-TTS-Android:1.0.0'
+    implementation 'com.github.changemyminds:Google-Cloud-TTS-Android:1.0.1'
 }
 ```
 
