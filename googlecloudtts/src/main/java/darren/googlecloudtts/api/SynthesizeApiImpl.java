@@ -34,9 +34,6 @@ public class SynthesizeApiImpl implements SynthesizeApi {
     @Override
     public SynthesizeResponse get(SynthesizeRequest request) {
         try {
-
-            System.out.println("Request: " + GsonUtil.toJson(request));
-
             Response response = makeRequest(request, mApiConfig);
             String bodyJson = Objects.requireNonNull(response.body()).string();
 
@@ -44,7 +41,6 @@ public class SynthesizeApiImpl implements SynthesizeApi {
                 throw new ApiResponseFailException(bodyJson);
             }
 
-            System.out.println("Response: " + bodyJson);
             return GsonUtil.toObject(bodyJson, SynthesizeResponse.class);
         } catch (Exception e) {
             throw new ApiException(e);

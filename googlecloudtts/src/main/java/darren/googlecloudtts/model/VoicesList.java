@@ -16,16 +16,14 @@ import darren.googlecloudtts.parameter.VoiceSelectionParams;
 public class VoicesList {
     private HashMap<String, List<VoiceSelectionParams>> hashMap = new HashMap<>();
 
-    public void add(String languageCode, VoiceSelectionParams gcpVoice) {
+    public void add(String languageCode, VoiceSelectionParams params) {
         List<VoiceSelectionParams> googleCloudVoices = hashMap.get(languageCode);
-
         if (googleCloudVoices == null) {
             googleCloudVoices = new ArrayList<>();
             hashMap.put(languageCode, googleCloudVoices);
-            return;
         }
 
-        googleCloudVoices.add(gcpVoice);
+        googleCloudVoices.add(params);
     }
 
     public String[] getLanguageCodes() {
