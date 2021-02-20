@@ -20,8 +20,6 @@ import darren.googlecloudtts.response.VoicesResponse;
  * Reference:
  */
 public class GoogleCloudTTS implements AutoCloseable {
-    private static final String TAG = GoogleCloudTTS.class.getName();
-
     private SynthesizeApi mSynthesizeApi;
     private VoicesApi mVoicesApi;
 
@@ -51,7 +49,7 @@ public class GoogleCloudTTS implements AutoCloseable {
         VoicesResponse response = mVoicesApi.get();
         VoicesList voicesList = new VoicesList();
 
-        for (VoicesResponse.Voices voices : response.voices) {
+        for (VoicesResponse.Voices voices : response.getVoices()) {
             String languageCode = voices.getLanguageCodes().get(0);
             VoiceSelectionParams params = new VoiceSelectionParams(
                     languageCode,

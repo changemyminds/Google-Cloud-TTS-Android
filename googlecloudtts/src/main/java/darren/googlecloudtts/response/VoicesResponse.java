@@ -12,7 +12,7 @@ import darren.googlecloudtts.parameter.SsmlVoiceGender;
  * Reference:
  */
 public class VoicesResponse implements Serializable {
-    public List<Voices> voices;
+    private List<Voices> voices;
 
     public List<Voices> getVoices() {
         return voices;

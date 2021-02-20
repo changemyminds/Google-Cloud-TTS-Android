@@ -14,6 +14,8 @@ debug{
 }
 ```
 
+If you want test your API key by junit, go to [here](googlecloudtts/build.gradle) and change "YOUR_API_KEY" to test.
+
 __Note__ <br>
 If you don't know the Google API Key, please see [Google document](https://cloud.google.com/docs/authentication/api-keys). <br>
 

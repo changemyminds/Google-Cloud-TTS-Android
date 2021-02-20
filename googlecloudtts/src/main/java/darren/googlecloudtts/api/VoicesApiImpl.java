@@ -40,7 +40,6 @@ public class VoicesApiImpl implements VoicesApi {
                 throw new ApiResponseFailException(bodyJson);
             }
 
-            System.out.println("Response: " + bodyJson);
             return GsonUtil.toObject(bodyJson, VoicesResponse.class);
 
         } catch (Exception e) {
